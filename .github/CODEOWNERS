@@ -1,0 +1,19 @@
+# CODEOWNERS
+# Each line is a file pattern followed by one or more owners.
+# Order is important: the last matching pattern takes precedence.
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owner for everything in the repository
+* @milo720
+
+# API
+/api/ @milo720
+
+# Frontend
+/frontend/ @milo720
+
+# Infrastructure
+/infra/ @milo720
+
+# Documentation
+/docs/ @milo720
