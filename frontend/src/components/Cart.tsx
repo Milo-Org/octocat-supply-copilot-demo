@@ -34,17 +34,17 @@ export default function Cart() {
     setAppliedCoupon(couponCode.trim().toUpperCase());
   };
 
-  // Calculate discount: use the highest product-level discount among items
-  const maxDiscount = cartItems.reduce((max, item) => {
-    const d = item.discount ?? 0;
-    return d > max ? d : max;
-  }, 0);
-
+  // Calculate per-item discount amounts
   const subtotal = cartItems.reduce((sum, item) => {
     return sum + item.price * effectiveQuantity(item.productId, item.quantity);
   }, 0);
 
-  const discountAmount = subtotal * maxDiscount;
+  const discountAmount = cartItems.reduce((sum, item) => {
+    const qty = effectiveQuantity(item.productId, item.quantity);
+    return sum + item.price * (item.discount ?? 0) * qty;
+  }, 0);
+
+  const discountPercent = subtotal > 0 ? (discountAmount / subtotal) * 100 : 0;
   const grandTotal = subtotal - discountAmount + (cartItems.length > 0 ? SHIPPING_COST : 0);
 
   const cell = `px-4 py-4 text-center ${darkMode ? 'text-light' : 'text-gray-800'}`;
@@ -186,10 +186,10 @@ export default function Cart() {
                     <span className={`font-semibold ${darkMode ? 'text-light' : 'text-gray-700'}`}>Subtotal</span>
                     <span className={darkMode ? 'text-light' : 'text-gray-800'}>${subtotal.toFixed(2)}</span>
                   </div>
-                  {maxDiscount > 0 && (
+                  {discountAmount > 0 && (
                     <div className="flex justify-between">
                       <span className={`font-semibold ${darkMode ? 'text-light' : 'text-gray-700'}`}>
-                        Discount ({Math.round(maxDiscount * 100)}%)
+                        Discount ({discountPercent.toFixed(0)}%)
                       </span>
                       <span className="text-red-400">-${discountAmount.toFixed(2)}</span>
                     </div>
